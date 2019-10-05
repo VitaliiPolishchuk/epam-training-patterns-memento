@@ -1,6 +1,7 @@
 package the.best;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 public class Board {
 
@@ -23,12 +24,20 @@ public class Board {
         this.board = new Figure[3][3];
     }
 
-    public boolean isEmpty(int x, int y) {
-        return board[x][y] == null;
+    private boolean isValid(int r, int c){
+        return r >= 0 && r < board.length &&
+                c >= 0 && c < board[0].length;
     }
 
-    public void add(int x, int y, Figure figure) {
-        board[x][y] = figure;
+    public boolean isEmpty(int r, int c) {
+        if(!isValid(r,c)){
+            throw new ArrayIndexOutOfBoundsException(String.format("Indexes out of bound r = %d, c = %d", r, c));
+        }
+        return board[r][c] == null;
+    }
+
+    public void add(int r, int c, Figure figure) {
+        board[r][c] = figure;
     }
 
     public boolean isEnd() {
@@ -106,5 +115,20 @@ public class Board {
             }
         }
         return clonedBoard;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Board board1 = (Board) o;
+        return Arrays.equals(board, board1.board);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(winner);
+        result = 31 * result + Arrays.hashCode(board);
+        return result;
     }
 }
